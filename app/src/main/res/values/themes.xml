@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.TvPlayer" parent="@style/Theme.Material3.Dark.NoActionBar" />
+</resources>
