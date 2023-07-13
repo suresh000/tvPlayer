@@ -8,7 +8,7 @@ public class ExceptionHelper {
         EXCEPTION_ENABLED = isLogEnabled;
     }
 
-    public static void printStackTrace(Exception e) {
+    public static void printStackTrace(Throwable e) {
         if (EXCEPTION_ENABLED) {
             e.printStackTrace();
             LogHelper.e("exception", e.getMessage());

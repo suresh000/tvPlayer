@@ -25,6 +25,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TvPlayer">
         <activity
+            android:name=".player.PlayerActivity"
+            android:exported="false" />
+        <activity
             android:name=".dashboard.DashboardActivity"
             android:exported="true">
             <intent-filter>
