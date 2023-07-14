@@ -12,12 +12,14 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.media3.common.util.UnstableApi
 import androidx.recyclerview.widget.GridLayoutManager
 import com.qs.tv.tvplayer.R
 import com.qs.tv.tvplayer.base.BaseFragment
 import com.qs.tv.tvplayer.databinding.FragmentHomeBinding
 import com.qs.tv.tvplayer.utils.VideoUtil
 
+@UnstableApi
 class HomeFragment : BaseFragment() {
 
     private var mBinding: FragmentHomeBinding? = null
@@ -48,6 +50,7 @@ class HomeFragment : BaseFragment() {
                 requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                     requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_VIDEO)
+                    requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
                 }
 
             } else {
@@ -61,7 +64,7 @@ class HomeFragment : BaseFragment() {
     private fun getVideos() {
         mVm.mRepository.isProgress.set(true)
 
-        VideoUtil.getVideoList(requireContext()) { viewModels ->
+        VideoUtil.getVideoItemList(requireContext()) { viewModels ->
             requireActivity().runOnUiThread {
                 mAdapter.refreshList(viewModels)
                 mVm.mRepository.isProgress.set(false)

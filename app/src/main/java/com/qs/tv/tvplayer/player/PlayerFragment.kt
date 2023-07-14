@@ -9,11 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.media3.common.util.UnstableApi
 import com.app.guniguru.utils.helpers.exoplayer.ExoPlayerCallback
-import com.app.guniguru.utils.helpers.exoplayer.ExoPlayerHelper
 import com.qs.tv.tvplayer.R
 import com.qs.tv.tvplayer.databinding.FragmentPlayerBinding
 import com.qs.tv.tvplayer.model.VideoModel
 import com.qs.tv.tvplayer.utils.JsonKeys
+import com.qs.tv.tvplayer.utils.helpers.exoplayer.ExoPlayerHelper
 
 @UnstableApi
 class PlayerFragment : Fragment(), ExoPlayerCallback {
@@ -22,6 +22,7 @@ class PlayerFragment : Fragment(), ExoPlayerCallback {
     private val mVm: PlayerViewModel by activityViewModels()
 
     private lateinit var mVideoModel: VideoModel
+    private lateinit var mExoPlayerHelper: ExoPlayerHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +40,8 @@ class PlayerFragment : Fragment(), ExoPlayerCallback {
         mBinding.vm = mVm
         mBinding.repository = mVm.mRepository
 
-        val exoPlayerHelper = ExoPlayerHelper(requireContext(), mBinding.playerView, this)
-        exoPlayerHelper.play(mVideoModel.uri)
+        mExoPlayerHelper = ExoPlayerHelper(requireContext(), mBinding.playerView)
+        mExoPlayerHelper.play(mVideoModel.uri)
 
         return mBinding.root
     }

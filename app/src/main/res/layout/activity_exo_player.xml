@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="vm"
+            type="com.qs.tv.tvplayer.player.exoplayer.ExoPlayerViewModel" />
+
+        <variable
+            name="repository"
+            type="com.qs.tv.tvplayer.player.exoplayer.ExoPlayerRepository" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/playerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:auto_show="true"
+            app:resize_mode="fill"
+            app:show_buffering="when_playing"
+            app:show_shuffle_button="true"
+            app:use_controller="true" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:alpha="0.5"
+            android:visibility="@{repository.timerVisibility ? View.VISIBLE : View.GONE}"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.App.MediumComponent.TopLeft.BottomLeft">
+
+            <com.qs.sharedcode.widgets.CustomTextView
+                style="?attr/materialCardViewElevatedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/dp_30"
+                android:paddingTop="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_30"
+                android:paddingBottom="@dimen/dp_16"
+                android:text="@{repository.timerValue}"
+                android:textColor="@color/white_100"
+                android:textSize="@dimen/sp_24"
+                app:text_font="NunitoSans_Bold"
+                tools:text="30" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

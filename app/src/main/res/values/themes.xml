@@ -1,4 +1,13 @@
 <resources>
 
     <style name="Theme.TvPlayer" parent="@style/Theme.Material3.Dark.NoActionBar" />
+
+    <style name="ShapeAppearance.App.MediumComponent.TopLeft.BottomLeft" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">@dimen/dp_0</item>
+        <item name="cornerSizeTopLeft">@dimen/dp_12</item>
+        <item name="cornerSizeBottomRight">@dimen/dp_0</item>
+        <item name="cornerSizeBottomLeft">@dimen/dp_12</item>
+    </style>
+
 </resources>

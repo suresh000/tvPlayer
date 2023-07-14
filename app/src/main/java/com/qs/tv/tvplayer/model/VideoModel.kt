@@ -8,6 +8,7 @@ data class VideoModel (
     var id: String = "",
     var name: String = "",
     var path: String = "",
+    var type: String = "",
     var uri: Uri,
     var thumbImage: Bitmap? = null
 ) : Serializable

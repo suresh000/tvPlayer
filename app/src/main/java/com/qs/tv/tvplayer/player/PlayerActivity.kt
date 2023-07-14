@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.media3.common.util.UnstableApi
 import androidx.viewpager2.widget.ViewPager2
 import com.app.guniguru.utils.helpers.exoplayer.ExoPlayerCallback
 import com.qs.tv.tvplayer.R
@@ -13,6 +14,7 @@ import com.qs.tv.tvplayer.home.VideoItemViewModel
 import com.qs.tv.tvplayer.utils.JsonKeys
 import com.qs.tv.tvplayer.utils.VideoUtil
 
+@UnstableApi
 class PlayerActivity : BaseFragmentActivity(), ExoPlayerCallback {
 
     private lateinit var mBinding: ActivityPlayerBinding
@@ -37,7 +39,7 @@ class PlayerActivity : BaseFragmentActivity(), ExoPlayerCallback {
 
     private fun setUpIntro() {
 
-        VideoUtil.getVideoList(this) { viewModels ->
+        VideoUtil.getVideoItemList(this) { viewModels ->
             runOnUiThread {
                 val list = ArrayList<Fragment>()
                 var currentPosition = 0
@@ -55,6 +57,7 @@ class PlayerActivity : BaseFragmentActivity(), ExoPlayerCallback {
 
                 val adapter = PlayerPagerAdapter(this, list)
                 mBinding.viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+                mBinding.viewPager.isUserInputEnabled = false
                 mBinding.viewPager.adapter = adapter
 
                 mBinding.viewPager.currentItem = currentPosition
