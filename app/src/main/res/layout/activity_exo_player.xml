@@ -20,15 +20,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.media3.ui.PlayerView
-            android:id="@+id/playerView"
+        <ViewFlipper
+            android:id="@+id/viewFlipper"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:auto_show="true"
-            app:resize_mode="fill"
-            app:show_buffering="when_playing"
-            app:show_shuffle_button="true"
-            app:use_controller="true" />
+            android:layout_height="match_parent">
+
+            <androidx.media3.ui.PlayerView
+                android:id="@+id/playerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:auto_show="true"
+                app:resize_mode="fill"
+                app:show_buffering="when_playing"
+                app:show_shuffle_button="true"
+                app:use_controller="true" />
+
+            <com.qs.sharedcode.widgets.CustomImageView
+                android:id="@+id/imageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:setImageBitmap='@{repository.mModel.imageBitmap}' />
+
+        </ViewFlipper>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"

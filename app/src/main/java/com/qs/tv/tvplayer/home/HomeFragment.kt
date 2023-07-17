@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.qs.tv.tvplayer.R
 import com.qs.tv.tvplayer.base.BaseFragment
 import com.qs.tv.tvplayer.databinding.FragmentHomeBinding
-import com.qs.tv.tvplayer.utils.VideoUtil
+import com.qs.tv.tvplayer.objects.VideoImageObject
 
 @UnstableApi
 class HomeFragment : BaseFragment() {
@@ -64,9 +64,9 @@ class HomeFragment : BaseFragment() {
     private fun getVideos() {
         mVm.mRepository.isProgress.set(true)
 
-        VideoUtil.getVideoItemList(requireContext()) { viewModels ->
+        VideoImageObject.getViewModelItem(requireContext()) {
             requireActivity().runOnUiThread {
-                mAdapter.refreshList(viewModels)
+                mAdapter.refreshList(it)
                 mVm.mRepository.isProgress.set(false)
             }
         }

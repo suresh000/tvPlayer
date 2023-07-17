@@ -25,7 +25,7 @@ class ExoPlayerActivity : AppCompatActivity() {
 
         mExoPlayerHelper = ExoPlayerHelper(this, mBinding.playerView)
 
-        val repository = ExoPlayerRepository(this, videoId, mExoPlayerHelper)
+        val repository = ExoPlayerRepository(this, videoId, mExoPlayerHelper, mBinding.viewFlipper)
         val factory = ExoPlayerViewModelFactory(repository)
         mVm = ViewModelProvider(this, factory)[ExoPlayerViewModel::class.java]
         mBinding.vm = mVm

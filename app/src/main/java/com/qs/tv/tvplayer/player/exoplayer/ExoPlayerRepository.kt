@@ -1,19 +1,23 @@
 package com.qs.tv.tvplayer.player.exoplayer
 
 import android.app.Activity
+import android.widget.ViewFlipper
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.media3.common.util.UnstableApi
 import com.qs.tv.tvplayer.model.VideoModel
-import com.qs.tv.tvplayer.utils.VideoUtil
+import com.qs.tv.tvplayer.objects.VideoImageObject
 import com.qs.tv.tvplayer.utils.helpers.exoplayer.ExoPlayerHelper
 
 @UnstableApi
 class ExoPlayerRepository(private val mActivity: Activity,
                           private val mVideoId: String = "",
-                          private val mExoPlayerHelper: ExoPlayerHelper
+                          private val mExoPlayerHelper: ExoPlayerHelper,
+                          private val mViewFlipper: ViewFlipper
 ) {
 
+    @JvmField
+    val mModel = ObservableField<VideoModel>()
     @JvmField
     val timerVisibility = ObservableBoolean(false)
     @JvmField
@@ -35,8 +39,8 @@ class ExoPlayerRepository(private val mActivity: Activity,
             }
         }
 
-        VideoUtil.getVideoList(mActivity) {
-            mVideoList.addAll(it)
+        VideoImageObject.getList(mActivity) { list ->
+            mVideoList.addAll(list)
 
             loop@for ((index, video) in mVideoList.withIndex()) {
                 if (video.id == mVideoId) {
@@ -45,7 +49,16 @@ class ExoPlayerRepository(private val mActivity: Activity,
                 }
             }
 
-            playVideo(mVideoList[currentPosition])
+            mActivity.runOnUiThread {
+                val model = mVideoList[currentPosition]
+                mModel.set(model)
+                if (model.isVideo) {
+                    mViewFlipper.displayedChild = 0
+                    playVideo(model)
+                } else {
+                    mViewFlipper.displayedChild = 1
+                }
+            }
         }
     }
 
