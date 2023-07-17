@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.media3.common.util.UnstableApi
 import androidx.recyclerview.widget.GridLayoutManager
+import com.qs.sharedcode.utils.AppUtils
 import com.qs.tv.tvplayer.R
 import com.qs.tv.tvplayer.base.BaseFragment
 import com.qs.tv.tvplayer.databinding.FragmentHomeBinding
@@ -64,10 +66,14 @@ class HomeFragment : BaseFragment() {
     private fun getVideos() {
         mVm.mRepository.isProgress.set(true)
 
-        VideoImageObject.getViewModelItem(requireContext()) {
+        VideoImageObject.getViewModelItem(requireContext()) { list ->
             requireActivity().runOnUiThread {
-                mAdapter.refreshList(it)
                 mVm.mRepository.isProgress.set(false)
+                if (list.isNotEmpty()) {
+                    mAdapter.refreshList(list)
+                } else {
+                    AppUtils.showToast(requireContext(), "No data found", Toast.LENGTH_SHORT)
+                }
             }
         }
     }
