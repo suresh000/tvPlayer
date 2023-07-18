@@ -49,4 +49,17 @@ abstract class BaseActivity : AppCompatActivity() {
         }).start()
     }*/
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        val currentFragment: Fragment? = getCurrentFragment()
+        if (currentFragment != null) {
+            currentFragment.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
 }
