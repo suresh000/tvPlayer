@@ -9,7 +9,7 @@
     </debug-overrides>
 
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">live.chartboost.com</domain>
+        <domain includeSubdomains="true">storage.googleapis.com</domain>
     </domain-config>
 
 </network-security-config>

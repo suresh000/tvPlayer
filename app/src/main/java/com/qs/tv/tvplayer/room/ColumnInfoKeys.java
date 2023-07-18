@@ -115,7 +115,7 @@ public class ColumnInfoKeys {
      * ***************** P *******************
      * ---------------------------------------
      */
-    public static final String KEY_PATH = "path";
+
 
 
     /*
@@ -138,7 +138,8 @@ public class ColumnInfoKeys {
      * ***************** S *******************
      * ---------------------------------------
      */
-
+    public static final String KEY_STORAGE_PATH = "storagePath";
+    public static final String KEY_STORAGE_THUMBNAIL_PATH = "storageThumbnailPath";
 
 
     /*
@@ -146,7 +147,7 @@ public class ColumnInfoKeys {
      * ***************** T *******************
      * ---------------------------------------
      */
-
+    public static final String KEY_THUMBNAIL_URL = "thumbnailUrl";
 
 
     /*
@@ -154,6 +155,7 @@ public class ColumnInfoKeys {
      * ***************** U *******************
      * ---------------------------------------
      */
+    public static final String KEY_URL = "url";
 
 
     /*

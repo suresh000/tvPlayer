@@ -16,7 +16,7 @@
         name="Pictures"
         path="." />
     <cache-path
-        name="myCash"
+        name="tvPlayer"
         path="." />
     <external-path
         name="files_root"
