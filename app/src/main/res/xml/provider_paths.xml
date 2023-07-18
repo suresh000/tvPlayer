@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path
+        name="external_files"
+        path="." />
+    <files-path
+        name="internal_logs"
+        path="logs/" />
+    <files-path
+        name="shared_files"
+        path="shared/" />
+    <cache-path
+        name="shared_images"
+        path="images/" />
+    <external-path
+        name="Pictures"
+        path="." />
+    <cache-path
+        name="myCash"
+        path="." />
+    <external-path
+        name="files_root"
+        path="Android/data/${applicationId}" />
+    <external-path
+        name="external_storage_root"
+        path="." />
+
+</paths>
