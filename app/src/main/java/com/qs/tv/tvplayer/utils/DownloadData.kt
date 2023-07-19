@@ -47,6 +47,37 @@ class DownloadData {
             }
 
         }
+
+        @JvmStatic
+        fun download(link: String, path: String) {
+            URL(link).openStream().use { input ->
+                FileOutputStream(File(path)).use { output ->
+                    input.copyTo(output)
+                }
+            }
+        }
+
+        @JvmStatic
+        fun download(link: String, path: String, progress: ((Long, Long) -> Unit)? = null): Long {
+            val url = URL(link)
+            val connection = url.openConnection()
+            connection.connect()
+            val length = connection.contentLengthLong
+            url.openStream().use { input ->
+                FileOutputStream(File(path)).use { output ->
+                    val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                    var bytesRead = input.read(buffer)
+                    var bytesCopied = 0L
+                    while (bytesRead >= 0) {
+                        output.write(buffer, 0, bytesRead)
+                        bytesCopied += bytesRead
+                        progress?.invoke(bytesCopied, length)
+                        bytesRead = input.read(buffer)
+                    }
+                    return bytesCopied
+                }
+            }
+        }
     }
 
 }
