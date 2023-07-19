@@ -48,6 +48,10 @@ class DashboardActivity : BaseActivity() {
             }
         }
 
+        /*val externalStorageVolumes: Array<out File> =
+            ContextCompat.getExternalFilesDirs(applicationContext, null)
+        val primaryExternalStorage: File = externalStorageVolumes[0]*/
+
     }
 
     private val navDestinationListener =

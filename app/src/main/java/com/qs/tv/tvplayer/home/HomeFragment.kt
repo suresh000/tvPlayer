@@ -6,25 +6,37 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.switchMap
 import androidx.media3.common.util.UnstableApi
 import androidx.recyclerview.widget.GridLayoutManager
-import com.qs.sharedcode.utils.AppUtils
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.qs.tv.tvplayer.R
 import com.qs.tv.tvplayer.base.BaseFragment
+import com.qs.tv.tvplayer.base.adapter.ViewModelItem
+import com.qs.tv.tvplayer.data.DownloadDummyImage
+import com.qs.tv.tvplayer.data.DownloadDummyVideo
 import com.qs.tv.tvplayer.databinding.FragmentHomeBinding
-import com.qs.tv.tvplayer.objects.VideoImageObject
+import com.qs.tv.tvplayer.room.AppRoomDatabase
+import com.qs.tv.tvplayer.room.entity.PlayerItem
 import com.qs.tv.tvplayer.utils.PermissionUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @UnstableApi
 class HomeFragment : BaseFragment() {
 
     private var mBinding: FragmentHomeBinding? = null
     private lateinit var mVm: HomeViewModel
+    private lateinit var listLiveData: LiveData<List<PlayerItem>>
     private val mAdapter = VideoAdapter(ArrayList())
 
     override fun onCreateView(
@@ -33,6 +45,7 @@ class HomeFragment : BaseFragment() {
     ): View {
         if (mBinding == null) {
             mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+            listLiveData = AppRoomDatabase.getInstance(requireContext()).playerItemDao().getListLiveData()
 
             with(mBinding!!) {
                 recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
@@ -64,7 +77,7 @@ class HomeFragment : BaseFragment() {
     private fun getVideos() {
         mVm.mRepository.isProgress.set(true)
 
-        VideoImageObject.getViewModelItem(requireContext()) { list ->
+        /*VideoImageObject.getViewModelItem(requireContext()) { list ->
             requireActivity().runOnUiThread {
                 mVm.mRepository.isProgress.set(false)
                 if (list.isNotEmpty()) {
@@ -73,7 +86,67 @@ class HomeFragment : BaseFragment() {
                     AppUtils.showToast(requireContext(), "No data found", Toast.LENGTH_SHORT)
                 }
             }
+        }*/
+
+        Thread(FetchData()).start()
+    }
+
+    private inner class FetchData : Runnable {
+
+        override fun run() {
+            CoroutineScope(Dispatchers.IO).launch {
+                withContext(Dispatchers.IO) {
+                    val count = AppRoomDatabase.getInstance(requireContext()).playerItemDao().getCount()
+                    if (count == 0) {
+                        val videoWorkRequest: WorkRequest =
+                            OneTimeWorkRequestBuilder<DownloadDummyVideo>()
+                                .build()
+                        WorkManager
+                            .getInstance(requireContext())
+                            .enqueue(videoWorkRequest)
+
+                        val imageWorkRequest: WorkRequest =
+                            OneTimeWorkRequestBuilder<DownloadDummyImage>()
+                                .build()
+                        WorkManager
+                            .getInstance(requireContext())
+                            .enqueue(imageWorkRequest)
+                    }
+
+                }
+
+                CoroutineScope(Dispatchers.Main).launch {
+                    requireActivity().runOnUiThread {
+                        listLiveData.removeObservers(this@HomeFragment)
+                        listLiveData = listLiveData.switchMap {
+                            AppRoomDatabase.getInstance(requireContext()).playerItemDao().getListLiveData()
+                        }
+                        listLiveData.observe(this@HomeFragment) { list ->
+                            Thread(LoadData(list)).start()
+                        }
+
+                    }
+                }
+
+            }
         }
+
+        private inner class LoadData(private val mList: List<PlayerItem>) : Runnable {
+            override fun run() {
+                val viewModels = ArrayList<ViewModelItem>()
+
+                for (item in mList) {
+                    viewModels.add(PlayerItemViewModel(requireContext(), item))
+                }
+
+                requireActivity().runOnUiThread {
+                    mVm.mRepository.isProgress.set(false)
+                    mAdapter.refreshList(viewModels)
+                }
+            }
+
+        }
+
     }
 
     private val requestPermissionLauncher =

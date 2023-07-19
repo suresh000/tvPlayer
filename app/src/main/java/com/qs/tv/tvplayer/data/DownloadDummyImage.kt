@@ -6,11 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
-import androidx.core.content.FileProvider
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.qs.tv.tvplayer.room.AppRoomDatabase
 import com.qs.tv.tvplayer.room.entity.PlayerItem
+import com.qs.tv.tvplayer.utils.DownloadData
 import com.qs.tv.tvplayer.utils.FileUtils
 import java.io.File
 
@@ -25,30 +25,36 @@ class DownloadDummyImage(private val mContext: Context, workerParams: WorkerPara
         for ((index, url) in DummyUrls.images.withIndex()) {
 
             val name = "Image$index"
-            val path = FileUtils.getImagePath(mContext) + "_" + name + ".jpg"
+            val path = FileUtils.getImagePath() + name + ".jpg"
+            val file = File(path)
+            if (FileUtils.isExit(path)) {
+                FileUtils.deleteFile(file)
+            }
 
             val item = PlayerItem()
             item.name = name
             item.storagePath = path
             item.url = url
-            item.storageThumbnailPath = ""
+            item.storageThumbnailPath = path
             item.thumbnailUrl = ""
+            item.isVideo = false
             AppRoomDatabase.getInstance(mContext).playerItemDao().insert(item)
 
-            startDownload(url, path)
+            //startDownload(url, file)
+            DownloadData.download(url, file)
 
         }
 
         return Result.success()
     }
 
-    private fun startDownload(url: String, path: String) {
+    private fun startDownload(url: String, file: File) {
         val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(url))
         request.setDescription("Download image...") // display in android notification
         request.setTitle("tvPlayer") // display in android notification
-        //request.setDestinationInExternalFilesDir(mContext, FileUtils.getImagePath(mContext), "fileName")
-        val destinationUri = FileProvider.getUriForFile(mContext, FileUtils.FILE_PROVIDER, File(path))
-        request.setDestinationUri(destinationUri)
+        //request.setDestinationInExternalFilesDir(mContext, FileUtils.getImagePath(mContext), path)
+        //val destinationUri = FileProvider.getUriForFile(mContext, FileUtils.FILE_PROVIDER, File(path))
+        request.setDestinationUri(Uri.fromFile(file))
         val manager = mContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
         /*

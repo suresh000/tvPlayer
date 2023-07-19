@@ -175,9 +175,41 @@ class FileUtils private constructor() {
         }
 
         @JvmStatic
+        fun getImagePath(): String {
+            val dir = File(
+                Environment.getExternalStorageDirectory().absolutePath
+                        + File.separator
+                        + "tvPlayer"
+                        + File.separator
+                        + "Image"
+                        + File.separator
+            )
+            if (!dir.exists()) {
+                dir.mkdirs()
+            }
+            return dir.path + File.separator
+        }
+
+        @JvmStatic
         fun getVideoPath(context: Context): String {
             val dir = File(
                 context.getExternalFilesDir(null).toString()
+                        + File.separator
+                        + "tvPlayer"
+                        + File.separator
+                        + "Video"
+                        + File.separator
+            )
+            if (!dir.exists()) {
+                dir.mkdirs()
+            }
+            return dir.path + File.separator
+        }
+
+        @JvmStatic
+        fun getVideoPath(): String {
+            val dir = File(
+                Environment.getExternalStorageDirectory().absolutePath
                         + File.separator
                         + "tvPlayer"
                         + File.separator

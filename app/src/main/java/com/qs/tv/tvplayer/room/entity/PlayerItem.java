@@ -28,6 +28,9 @@ public class PlayerItem {
     @ColumnInfo(name = ColumnInfoKeys.KEY_THUMBNAIL_URL)
     private String thumbnailUrl;
 
+    @ColumnInfo(name = ColumnInfoKeys.KEY_IS_VIDEO)
+    private boolean isVideo;
+
     public int getId() {
         return id;
     }
@@ -74,5 +77,13 @@ public class PlayerItem {
 
     public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public boolean isVideo() {
+        return isVideo;
+    }
+
+    public void setVideo(boolean video) {
+        isVideo = video;
     }
 }

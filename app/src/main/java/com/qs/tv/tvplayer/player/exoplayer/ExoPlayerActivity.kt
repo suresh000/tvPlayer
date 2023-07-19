@@ -21,7 +21,7 @@ class ExoPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_exo_player)
 
-        val videoId = intent.getStringExtra(JsonKeys.KEY_VIDEO_ID).toString()
+        val videoId = intent.getIntExtra(JsonKeys.KEY_ID, -1)
 
         mExoPlayerHelper = ExoPlayerHelper(this, mBinding.playerView)
 

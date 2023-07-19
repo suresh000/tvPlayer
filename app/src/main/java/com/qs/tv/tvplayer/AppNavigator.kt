@@ -20,9 +20,9 @@ class AppNavigator private constructor() {
         }
 
         @JvmStatic
-        fun navigateToExoPlayerActivity(context: Context, videoId: String) {
+        fun navigateToExoPlayerActivity(context: Context, id: Int) {
             val intent = Intent(context, ExoPlayerActivity::class.java)
-            intent.putExtra(JsonKeys.KEY_VIDEO_ID, videoId)
+            intent.putExtra(JsonKeys.KEY_ID, id)
             context.startActivity(intent)
         }
 

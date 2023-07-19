@@ -24,5 +24,11 @@
     <external-path
         name="external_storage_root"
         path="." />
+    <external-files-path
+        name="tvPlayer"
+        path="Image/" />
+    <external-files-path
+        name="tvPlayer"
+        path="Video/" />
 
 </paths>
