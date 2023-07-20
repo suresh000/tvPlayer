@@ -1,12 +1,9 @@
 package com.qs.tv.tvplayer.home
 
-import android.Manifest
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -25,7 +22,6 @@ import com.qs.tv.tvplayer.data.DownloadDummyVideo
 import com.qs.tv.tvplayer.databinding.FragmentHomeBinding
 import com.qs.tv.tvplayer.room.AppRoomDatabase
 import com.qs.tv.tvplayer.room.entity.PlayerItem
-import com.qs.tv.tvplayer.utils.PermissionUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -58,17 +54,7 @@ class HomeFragment : BaseFragment() {
             mBinding!!.vm = mVm
             mBinding!!.repository = mVm.mRepository
 
-            if (PermissionUtil.isPermissionGranted(requireContext())) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    requestPermissionLauncher.launch(arrayOf(Manifest.permission.READ_MEDIA_VIDEO,
-                        Manifest.permission.READ_MEDIA_IMAGES,
-                        Manifest.permission.READ_EXTERNAL_STORAGE))
-                } else {
-                    requestPermissionLauncher.launch(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
-                }
-            } else {
-                getVideos()
-            }
+            getVideos()
         }
 
         return mBinding!!.root
@@ -148,19 +134,6 @@ class HomeFragment : BaseFragment() {
         }
 
     }
-
-    private val requestPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-                permissions: Map<String, Boolean> ->
-
-            permissions.entries.forEach {
-                val permissionName = it.key
-                val isGranted = it.value
-                if (isGranted) {
-                    getVideos()
-                }
-            }
-        }
 
     override fun getCurrentFragment(): Fragment? {
         return null

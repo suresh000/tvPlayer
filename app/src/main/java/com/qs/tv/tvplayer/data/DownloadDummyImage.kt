@@ -25,7 +25,7 @@ class DownloadDummyImage(private val mContext: Context, workerParams: WorkerPara
         for ((index, url) in DummyUrls.images.withIndex()) {
 
             val name = "Image$index"
-            val path = FileUtils.getImagePath() + name + ".jpg"
+            val path = FileUtils.getImageExternalStorageDirectory(mContext) + name + ".jpg"
             val file = File(path)
             if (FileUtils.isExit(path)) {
                 FileUtils.deleteFile(file)

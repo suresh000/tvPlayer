@@ -3,6 +3,7 @@ package com.qs.tv.tvplayer
 import android.content.Context
 import android.content.Intent
 import androidx.media3.common.util.UnstableApi
+import com.qs.tv.tvplayer.dashboard.DashboardActivity
 import com.qs.tv.tvplayer.player.PlayerActivity
 import com.qs.tv.tvplayer.player.exoplayer.ExoPlayerActivity
 import com.qs.tv.tvplayer.utils.JsonKeys
@@ -11,6 +12,13 @@ import com.qs.tv.tvplayer.utils.JsonKeys
 class AppNavigator private constructor() {
 
     companion object {
+
+        @JvmStatic
+        fun navigateToDashboardActivity(context: Context) {
+            val intent = Intent(context, DashboardActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            context.startActivity(intent)
+        }
 
         @JvmStatic
         fun navigateToPlayerActivity(context: Context, videoId: String) {

@@ -175,19 +175,24 @@ class FileUtils private constructor() {
         }
 
         @JvmStatic
-        fun getImagePath(): String {
-            val dir = File(
-                Environment.getExternalStorageDirectory().absolutePath
-                        + File.separator
-                        + "tvPlayer"
-                        + File.separator
-                        + "Image"
-                        + File.separator
-            )
-            if (!dir.exists()) {
-                dir.mkdirs()
+        fun getImageExternalStorageDirectory(context: Context): String {
+            val root = Environment.getExternalStorageDirectory()
+            if (!isExternalStorageRemovable(root)) {
+                val dir = File(
+                    root.absolutePath
+                            + File.separator
+                            + "tvPlayer"
+                            + File.separator
+                            + "Image"
+                            + File.separator
+                )
+                if (!dir.exists()) {
+                    dir.mkdirs()
+                }
+                return dir.path + File.separator
+            } else {
+                return getImagePath(context)
             }
-            return dir.path + File.separator
         }
 
         @JvmStatic
@@ -207,19 +212,24 @@ class FileUtils private constructor() {
         }
 
         @JvmStatic
-        fun getVideoPath(): String {
-            val dir = File(
-                Environment.getExternalStorageDirectory().absolutePath
-                        + File.separator
-                        + "tvPlayer"
-                        + File.separator
-                        + "Video"
-                        + File.separator
-            )
-            if (!dir.exists()) {
-                dir.mkdirs()
+        fun getVideoExternalStorageDirectory(context: Context): String {
+            val root = Environment.getExternalStorageDirectory()
+            if (!isExternalStorageRemovable(root)) {
+                val dir = File(
+                    root.absolutePath
+                            + File.separator
+                            + "tvPlayer"
+                            + File.separator
+                            + "Video"
+                            + File.separator
+                )
+                if (!dir.exists()) {
+                    dir.mkdirs()
+                }
+                return dir.path + File.separator
+            } else {
+                return getVideoPath(context)
             }
-            return dir.path + File.separator
         }
 
         @JvmStatic
@@ -231,6 +241,11 @@ class FileUtils private constructor() {
             } else {
                 false
             }
+        }
+
+        @JvmStatic
+        fun isExternalStorageRemovable(file: File) : Boolean {
+            return Environment.isExternalStorageRemovable(file)
         }
 
         @JvmStatic

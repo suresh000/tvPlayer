@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.qs.tv.tvplayer.objects.DeviceMemoryObject
 import com.qs.tv.tvplayer.room.AppRoomDatabase
 import com.qs.tv.tvplayer.room.entity.PlayerItem
 import com.qs.tv.tvplayer.utils.DownloadData
@@ -24,7 +25,12 @@ class DownloadDummyVideo(private val mContext: Context, workerParams: WorkerPara
         for ((index, url) in DummyUrls.videos.withIndex()) {
 
             val name = "Video$index"
-            val path = FileUtils.getVideoPath() + name + ".mp4"
+            val path = if (DeviceMemoryObject.isExternalStorageAvailable(mContext)) {
+                FileUtils.getVideoExternalStorageDirectory(mContext) + name + ".mp4"
+            } else {
+                ""
+            }
+
             val file = File(path)
             if (FileUtils.isExit(path)) {
                 FileUtils.deleteFile(file)
@@ -40,7 +46,9 @@ class DownloadDummyVideo(private val mContext: Context, workerParams: WorkerPara
             AppRoomDatabase.getInstance(mContext).playerItemDao().insert(item)
 
             //startDownload(url, file)
-            DownloadData.download(url, file)
+            if (DeviceMemoryObject.isExternalStorageAvailable(mContext)) {
+                DownloadData.download(url, file)
+            }
 
         }
 

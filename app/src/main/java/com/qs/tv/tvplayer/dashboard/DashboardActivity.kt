@@ -1,11 +1,6 @@
 package com.qs.tv.tvplayer.dashboard
 
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.Settings
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -38,15 +33,6 @@ class DashboardActivity : BaseActivity() {
         navController.addOnDestinationChangedListener(navDestinationListener)
 
         lifecycle.addObserver(DashboardLifecycleObserver(applicationContext, mVm))
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (!Environment.isExternalStorageManager()) {
-                val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-                val uri = Uri.fromParts("package", packageName, null)
-                intent.data = uri
-                startActivity(intent)
-            }
-        }
 
         /*val externalStorageVolumes: Array<out File> =
             ContextCompat.getExternalFilesDirs(applicationContext, null)
