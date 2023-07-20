@@ -8,6 +8,7 @@ import androidx.databinding.ObservableField
 import androidx.media3.common.util.UnstableApi
 import com.qs.tv.tvplayer.room.AppRoomDatabase
 import com.qs.tv.tvplayer.room.entity.PlayerItem
+import com.qs.tv.tvplayer.utils.CountDownTimer
 import com.qs.tv.tvplayer.utils.helpers.exoplayer.ExoPlayerHelper
 import java.io.File
 
@@ -29,6 +30,7 @@ class ExoPlayerRepository(private val mActivity: Activity,
 
     private val mVideoList = ArrayList<PlayerItem>()
     private var currentPosition = 0
+    private lateinit var mImageCountDownTimer: CountDownTimer
 
     init {
 
@@ -38,8 +40,20 @@ class ExoPlayerRepository(private val mActivity: Activity,
         }
         mExoPlayerHelper.mPlayNextCallback = {
             currentPosition += 1
-            if (currentPosition < mVideoList.size) {
-                playVideo(mVideoList[currentPosition])
+            if (currentPosition >= mVideoList.size) {
+                currentPosition = 0
+            }
+            mActivity.runOnUiThread {
+                val model = mVideoList[currentPosition]
+                mModel.set(model)
+                if (model.isVideo) {
+                    mViewFlipper.displayedChild = 0
+                    playVideo(model)
+                } else {
+                    mViewFlipper.displayedChild = 1
+                    imageUri.set(Uri.fromFile(File(model.storagePath)))
+                    startImageTimer()
+                }
             }
         }
 
@@ -68,6 +82,7 @@ class ExoPlayerRepository(private val mActivity: Activity,
                     } else {
                         mViewFlipper.displayedChild = 1
                         imageUri.set(Uri.fromFile(File(model.storagePath)))
+                        startImageTimer()
                     }
                 }
             }
@@ -80,5 +95,21 @@ class ExoPlayerRepository(private val mActivity: Activity,
             timerVisibility.set(false)
             mExoPlayerHelper.play(Uri.fromFile(File(video.storagePath)))
         }
+    }
+
+    private fun startImageTimer() {
+        mImageCountDownTimer = object : CountDownTimer(5000L, 5000L) {
+
+            override fun onTick(millisUntilFinished: Long) {
+
+            }
+
+            override fun onFinish() {
+                mExoPlayerHelper.mPlayNextCallback?.invoke()
+                cancel()
+            }
+
+        }
+        mImageCountDownTimer.start()
     }
 }
