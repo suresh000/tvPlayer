@@ -65,13 +65,13 @@ class ExoPlayerHelper(base: Context, playerView: PlayerView) : ContextWrapper(ba
                             mCountDownTimer = object : CountDownTimer(30000L, 1000L) {
 
                                 override fun onTick(millisUntilFinished: Long) {
-                                    if (mUpdateTimerCallback != null) {
+                                    /*if (mUpdateTimerCallback != null) {
                                         mUpdateTimerCallback!!.invoke((duration - player!!.currentPosition))
-                                    }
+                                    }*/
                                 }
 
                                 override fun onFinish() {
-
+                                    cancel()
                                 }
 
                             }
