@@ -1,26 +1,27 @@
 package com.qs.tv.tvplayer.data
 
-import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.net.Uri
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.qs.tv.tvplayer.AppController
 import com.qs.tv.tvplayer.objects.DeviceMemoryObject
 import com.qs.tv.tvplayer.room.AppRoomDatabase
 import com.qs.tv.tvplayer.room.entity.PlayerItem
-import com.qs.tv.tvplayer.utils.DownloadData
 import com.qs.tv.tvplayer.utils.FileUtils
-import java.io.File
+import com.qs.tv.tvplayer.utils.JsonKeys
 
 class DownloadDummyVideo(private val mContext: Context, workerParams: WorkerParameters) :
     Worker(mContext, workerParams) {
 
     override fun doWork(): Result {
 
-        mContext.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        //mContext.registerReceiver(onComplete, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         for ((index, url) in DummyUrls.videos.withIndex()) {
 
@@ -29,11 +30,6 @@ class DownloadDummyVideo(private val mContext: Context, workerParams: WorkerPara
                 FileUtils.getVideoExternalStorageDirectory(mContext) + name + ".mp4"
             } else {
                 ""
-            }
-
-            val file = File(path)
-            if (FileUtils.isExit(path)) {
-                FileUtils.deleteFile(file)
             }
 
             val item = PlayerItem()
@@ -45,9 +41,18 @@ class DownloadDummyVideo(private val mContext: Context, workerParams: WorkerPara
             item.isVideo = true
             AppRoomDatabase.getInstance(mContext).playerItemDao().insert(item)
 
-            //startDownload(url, file)
             if (DeviceMemoryObject.isExternalStorageAvailable(mContext)) {
-                DownloadData.download(url, file)
+                val data = Data.Builder()
+                data.putString(JsonKeys.KEY_URL, url)
+                data.putString(JsonKeys.KEY_PATH, path)
+
+                val imageWorkRequest: WorkRequest =
+                    OneTimeWorkRequestBuilder<DownloadWorker>()
+                        .setInputData(data.build())
+                        .build()
+                WorkManager
+                    .getInstance(AppController.instance.applicationContext)
+                    .enqueue(imageWorkRequest)
             }
 
         }
@@ -55,27 +60,10 @@ class DownloadDummyVideo(private val mContext: Context, workerParams: WorkerPara
         return Result.success()
     }
 
-    private fun startDownload(url: String, file: File) {
-        val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(url))
-        request.setDescription("Download video...") // display in android notification
-        request.setTitle("tvPlayer") // display in android notification
-        //request.setDestinationInExternalFilesDir(mContext, FileUtils.getImagePath(mContext), path)
-        //val destinationUri = FileProvider.getUriForFile(mContext, FileUtils.FILE_PROVIDER, File(path))
-        request.setDestinationUri(Uri.fromFile(file))
-        val manager = mContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-
-        /*
-        * start the download and return the id of the download.
-        * this id can be used to get info about the file (the size, the download progress ...)
-        * you can also stop the download by using this id
-        * */
-        val downloadId = manager.enqueue(request)
-    }
-
     private val onComplete: BroadcastReceiver = object : BroadcastReceiver() {
 
         override fun onReceive(ctxt: Context?, intent: Intent?) {
-            // your code
+
         }
     }
 }
